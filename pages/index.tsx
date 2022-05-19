@@ -8,8 +8,6 @@ const Home: NextPage = () => {
       <Head>
         <title>Reddit 2.0 | by nmferraz</title>
       </Head>
-
-      <Header />
     </div>
   )
 }
