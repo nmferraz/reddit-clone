@@ -5,6 +5,8 @@ import Avatar from './Avatar'
 import { useForm } from 'react-hook-form'
 import { useMutation } from '@apollo/client'
 import { ADD_POST } from '../graphql/mutations'
+import client from '@apollo/client'
+import { GET_SUBREDDIT_BY_TOPIC } from '../graphql/queries'
 
 type FormData = {
   postTitle: string
@@ -28,12 +30,25 @@ const PostBox = () => {
   } = useForm<FormData>()
 
   const onSubmit = handleSubmit(async (formData) => {
-    console.log(formData)
     try {
-      
-    } catch (error) {
-      
-    }
+      const {
+        data: { getSubredditListByTopic },
+      } = await client.query({
+        query: GET_SUBREDDIT_BY_TOPIC,
+        variables: {
+          topic: formData.subreddit,
+        },
+      })
+
+      const subredditExists = getSubredditListByTopic.length > 0;
+
+      if (!subredditExists) {
+        
+      }else{
+        
+      }
+
+    } catch (error) {}
   })
 
   return (
