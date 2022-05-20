@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import Avatar from './Avatar'
 import { useForm } from 'react-hook-form'
 import { useMutation } from '@apollo/client'
-import { ADD_POST } from '../graphql/mutations'
+import { ADD_POST, ADD_SUBREDDIT } from '../graphql/mutations'
 import client from '@apollo/client'
 import { GET_SUBREDDIT_BY_TOPIC } from '../graphql/queries'
 
@@ -18,6 +18,7 @@ type FormData = {
 const PostBox = () => {
   const { data: session } = useSession()
   const [addPost] = useMutation(ADD_POST)
+  const [addSubreddit] = useMutation(ADD_SUBREDDIT)
 
   const [imageBoxOpen, setImageBoxOpen] = useState()
 
@@ -40,14 +41,56 @@ const PostBox = () => {
         },
       })
 
-      const subredditExists = getSubredditListByTopic.length > 0;
+      const subredditExists = getSubredditListByTopic.length > 0
 
       if (!subredditExists) {
-        
-      }else{
-        
-      }
+        console.log("Subreddit doesn't exist! Creating it...")
 
+        const {
+          data: { insertSubreddit: newSubreddit },
+        } = await addSubreddit({
+          variables: {
+            topic: formData.subreddit,
+          },
+        })
+
+        console.log('Subreddit created!')
+
+        const image = formData.postImage || ''
+
+        const {
+          data: { insertPost: newPost },
+        } = await addPost({
+          variables: {
+            title: formData.postTitle,
+            body: formData.postBody,
+            image: image,
+            subreddit_id: newSubreddit.id,
+            username: session?.user?.name,
+          },
+        })
+
+        console.log('Post created! Data: ', newPost)
+      } else {
+        console.log('Subreddit exists! Using it...')
+        console.log(getSubredditListByTopic)
+
+        const image = formData.postImage || ''
+
+        const {
+          data: { insertPost: newPost },
+        } = await addPost({
+          variables: {
+            title: formData.postTitle,
+            body: formData.postBody,
+            image: image,
+            subreddit_id: getSubredditListByTopic[0].id,
+            username: session?.user?.name,
+          },
+        })
+
+        console.log('Post created! Data: ', newPost)
+      }
     } catch (error) {}
   })
 
