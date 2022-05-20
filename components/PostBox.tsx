@@ -1,6 +1,6 @@
 import { LinkIcon, PhotographIcon } from '@heroicons/react/outline'
 import { useSession } from 'next-auth/react'
-import React from 'react'
+import React, { useState } from 'react'
 import Avatar from './Avatar'
 import { useForm } from 'react-hook-form'
 
@@ -13,6 +13,7 @@ type FormData = {
 
 const PostBox = () => {
   const { data: session } = useSession()
+  const [imageBoxOpen, setImageBoxOpen] = useState()
   const {
     register,
     handleSubmit,
@@ -34,7 +35,12 @@ const PostBox = () => {
             session ? 'Create a post by entering a title' : 'Sign in to post'
           }
         />
-        <PhotographIcon className={`h-6 cursor-pointer text-gray-300`} />
+        <PhotographIcon
+          onClick={() => setImageBoxOpen(!imageBoxOpen)}
+          className={`h-6 cursor-pointer text-gray-300 ${
+            imageBoxOpen && 'text-blue-300'
+          }`}
+        />
         <LinkIcon className="h-6 text-gray-300" />
       </div>
 
@@ -52,12 +58,44 @@ const PostBox = () => {
           <div className="flex items-center px-2">
             <p className="min-w-[90px]">Subreddit:</p>
             <input
-              {...register('subreddit')}
+              {...(register('subreddit'), { required: true })}
               type="text"
               className="m-2 flex-1 bg-blue-50 p-2 outline-none"
               placeholder="i.e. reactjs"
             />
           </div>
+
+          {imageBoxOpen && (
+            <div className="flex items-center px-2">
+              <p className="min-w-[90px]">Image URL:</p>
+              <input
+                {...register('postImage')}
+                type="text"
+                className="m-2 flex-1 bg-blue-50 p-2 outline-none"
+                placeholder="Optional..."
+              />
+            </div>
+          )}
+
+          {Object.keys(errors).length > 0 && (
+            <div className="space-y-2 p-2 text-red-500">
+              {errors.postTitle?.type === 'required' && (
+                <p>- A post title is required</p>
+              )}
+              {errors.subreddit?.type === 'required' && (
+                <p>- A subreddit is required</p>
+              )}
+            </div>
+          )}
+
+          {watch('postTitle') && (
+            <button
+              type="submit"
+              className="w-full rounded-full bg-blue-400 p-2 text-white"
+            >
+              Create Post
+            </button>
+          )}
         </div>
       )}
     </form>
