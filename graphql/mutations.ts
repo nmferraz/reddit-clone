@@ -17,11 +17,11 @@ export const ADD_POST = gql`
     ) {
       body
       created_at
-      image
       id
+      image
+      subreddit_id
       title
       username
-      subreddit_id
     }
   }
 `
