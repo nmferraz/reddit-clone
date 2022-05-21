@@ -5,7 +5,7 @@ import Avatar from './Avatar'
 import { useForm } from 'react-hook-form'
 import { useMutation } from '@apollo/client'
 import { ADD_POST, ADD_SUBREDDIT } from '../graphql/mutations'
-import client from '@apollo/client'
+import client from '../apollo-client'
 import { GET_SUBREDDIT_BY_TOPIC } from '../graphql/queries'
 import toast from 'react-hot-toast'
 
@@ -32,18 +32,20 @@ const PostBox = () => {
   } = useForm<FormData>()
 
   const onSubmit = handleSubmit(async (formData) => {
+    console.log(formData)
     const notification = toast.loading('Creating post...')
     try {
+
       const {
         data: { getSubredditListByTopic },
       } = await client.query({
         query: GET_SUBREDDIT_BY_TOPIC,
         variables: {
-          topic: formData.subreddit,
+          topic: formData.subreddit
         },
-      })
+      })      
 
-      const subredditExists = getSubredditListByTopic.length > 0
+      const subredditExists = getSubredditListByTopic.length > 0;
 
       if (!subredditExists) {
         console.log("Subreddit doesn't exist! Creating it...")
@@ -52,7 +54,7 @@ const PostBox = () => {
           data: { insertSubreddit: newSubreddit },
         } = await addSubreddit({
           variables: {
-            topic: formData.subreddit,
+            topic: formData.subreddit
           },
         })
 
@@ -103,6 +105,7 @@ const PostBox = () => {
         id: notification,
       })
     } catch (error) {
+      console.log(error)
       toast.error('Whoops! Something went wrong :(', {
         id: notification,
       })

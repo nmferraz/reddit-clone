@@ -121,7 +121,7 @@ type Mutation {
   insertSubreddit(topic: String!): Subreddit
     @dbquery(
       type: "postgresql"
-      table: "post"
+      table: "subreddit"
       dml: INSERT
       configuration: "postgresql_config"
     )
