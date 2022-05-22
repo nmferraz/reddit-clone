@@ -10,6 +10,25 @@ query MyQuery{
     title
     subreddit_id
     username
+    comments {
+      created_at
+      id
+      getCommentByPost_id
+      text
+      username
+    }
+    subreddit{
+      id
+      topic
+      created_at
+    }
+    votes{
+      id
+      created_at
+      username
+      post_id
+      upvote
+    }
   }
 }
 `
