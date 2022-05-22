@@ -35,17 +35,16 @@ const PostBox = () => {
     console.log(formData)
     const notification = toast.loading('Creating post...')
     try {
-
       const {
         data: { getSubredditListByTopic },
       } = await client.query({
         query: GET_SUBREDDIT_BY_TOPIC,
         variables: {
-          topic: formData.subreddit
+          topic: formData.subreddit,
         },
-      })      
+      })
 
-      const subredditExists = getSubredditListByTopic.length > 0;
+      const subredditExists = getSubredditListByTopic.length > 0
 
       if (!subredditExists) {
         console.log("Subreddit doesn't exist! Creating it...")
@@ -54,7 +53,7 @@ const PostBox = () => {
           data: { insertSubreddit: newSubreddit },
         } = await addSubreddit({
           variables: {
-            topic: formData.subreddit
+            topic: formData.subreddit,
           },
         })
 
