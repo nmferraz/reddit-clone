@@ -15,10 +15,10 @@ type Post {
   title: String
   username: String
   subreddit: [Subreddit]
-  @materializer(
-    query: "getSubredditListById",
-    arguments: [{name: "id", "field": "subreddit_id"}]
-  )
+    @materializer(
+      query: "getSubredditListById",
+      arguments: [{name: "id", field: "subreddit_id"}]
+    )
 }
 
 type Subreddit {
