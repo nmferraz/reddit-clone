@@ -1,9 +1,11 @@
 import React from 'react'
 
-const Post = () => {
-  return (
-    <div>Post</div>
-  )
+type Props = {
+  post: Post
+}
+
+function Post({ post }: Props) {
+  return <div>{post.id}</div>
 }
 
 export default Post
